@@ -1,19 +1,43 @@
+//framework and modules import
 const express = require('express');
 const http = require('http');
-
-const app = express();
-
-const server = http.createServer(app);
-
-
-const url = require('url');
+//const url = require('url');
 const utils = require('./utils');
 
+//create a new express application
+const app = express();
+
+//create a new http server
+const SERVER_PORT = 6999 || process.env.PORT;
+const SERVER_HOST = '0.0.0.0' || process.env.HOST;
+const server = http.createServer(app);
+
+/**
+ * Bind server to SERVER_PORT and SERVER_HOST
+ */
+server.listen(SERVER_PORT, SERVER_HOST, function () {
+    const host = server.address().address;
+    const port = server.address().port;
+    const address = `http://${host}:${port}`;
+    console.log(`Server avviato ed in ascolto all'indirizzo: ${address} sulla porta ${port}`);
+});
+
+/**
+ * Get request
+ * @url '/'
+ */
 app.get('/', function (req, res) {
     res.send('Ciao da Express!!!');
 });
 
-
+/**
+ * Get request
+ * @url '/:nome?'
+ */
+app.get('/:nome?', function (req, res) {
+    const nome = req.params.nome || 'Sconosciuto';
+    res.json({ nome })
+});
 
 
 /*async function onRequest(request, response) {
@@ -58,12 +82,8 @@ app.get('/', function (req, res) {
     }
 }*/
 
-const SERVER_PORT = 6999 || process.env.PORT;
-const HOST = '0.0.0.0' || process.env.HOST;
 
-server.listen(SERVER_PORT, HOST, function () {
-    const host = server.address().address;
-    const port = server.address().port;
-    const address = `http://${host}:${port}`;
-    console.log(`Server avviato ed in ascolto all'indirizzo: ${address} sulla porta ${port}`);
-});
+
+
+
+
