@@ -31,8 +31,45 @@ server.listen(SERVER_PORT, SERVER_HOST, function () {
 app.post('/register/', function (req, res) {
     const name = req.body.name;
     const surname = req.body.surname;
+    const email = req.body.email;
     const username = req.body.username;
     const password = req.body.password;
+    const address = req.body.address;
+    const city = req.body.city;
+    const region =  req.body.region;
+    const country =  req.body.country;
+    const tel = req.body.tel;
+
+
+    if (name && surname && email && username && password && address && city && region && country && tel) {
+        const db = new DatabaseConnection();
+        db.connect();
+
+        const sql = "INSERT INTO Users (name, surname, email, username, password, address, city, region, country, tel) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        const value = [name, surname, email, username, password, address, city, region, country, tel];
+
+        db.executeQuery(sql, value);
+
+        db.closeConnection();
+
+        res.send("registrato con successo");
+
+    } else {
+        res.status(400).json({
+            error : "you should provide all params"
+        });
+    }
+});
+
+
+app.post('/register-test/', function (req, res) {
+    const name = req.body.name;
+    const surname = req.body.surname;
+    const email = req.body.email;
+    const username = req.body.username;
+    const password = req.body.password;
+
+
 
     if (username && password) {
         const db = new DatabaseConnection();
@@ -53,6 +90,7 @@ app.post('/register/', function (req, res) {
         });
     }
 });
+
 
 /**
  * GET request
