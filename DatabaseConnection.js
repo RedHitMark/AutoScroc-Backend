@@ -21,5 +21,9 @@ module.exports = class DatabaseConnection {
     executeQuery(sql, value) {
         this.connection.query(sql, value)
     }
+
+    closeConnection() {
+        this.connection.destroy();
+    }
 };
 

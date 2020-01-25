@@ -3,8 +3,8 @@ const http = require('http');
 const express = require('express');
 const bodyParser = require('body-parser');
 const session = require('express-session');
-const utils = require('./utils');
 const DatabaseConnection = require('./DatabaseConnection');
+const utils = require('./utils');
 
 
 //create a new express application
@@ -39,14 +39,18 @@ app.post('/register/', function (req, res) {
         db.connect();
 
         const sql = "INSERT INTO Users (name, surname, email, username, password, address, region, country, tel) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
-        const value = ['John', 'Highway 71', 'Highway 71','Highway 71','Highway 71','Highway 71','Highway 71', 'Highway 71', 'Highway 71'];
+        const value = ['John', 'Highway 71', 'Highway 71', username, password,'Highway 71','Highway 71', 'Highway 71', 'Highway 71'];
 
         db.executeQuery(sql, value);
+
+        db.closeConnection();
 
         res.send("registrato con successo");
 
     } else {
-        res.status(400).send('dessp');
+        res.status(400).json({
+            error : "you should provide all params"
+        });
     }
 });
 
