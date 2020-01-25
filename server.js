@@ -124,5 +124,5 @@ app.delete('/:nome?', function (req, res) {
     res.json({ nome })
 });
 
-var unix = Math.round(+new Date()/1000);
+var timestamp = Math.round(+new Date()/1000);
 console.log("hai startato il server al secondo:",unix);
