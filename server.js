@@ -4,6 +4,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const session = require('express-session');
 const utils = require('./utils');
+const DatabaseConnection = require('./DatabaseConnection');
 
 
 //create a new express application
@@ -27,7 +28,27 @@ server.listen(SERVER_PORT, SERVER_HOST, function () {
     console.log(`Server avviato ed in ascolto all'indirizzo ${address} sulla porta ${port}`);
 });
 
-require('./login');
+app.post('/register/', function (req, res) {
+    const name = req.body.name;
+    const surname = req.body.surname;
+    const username = req.body.username;
+    const password = req.body.password;
+
+    if (username && password) {
+        const db = new DatabaseConnection();
+        db.connect();
+
+        const sql = "INSERT INTO Users (name, surname, email, username, password, address, region, country, tel) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        const value = ['John', 'Highway 71', 'Highway 71','Highway 71','Highway 71','Highway 71','Highway 71', 'Highway 71', 'Highway 71'];
+
+        db.executeQuery(sql, value);
+
+        res.send("registrato con successo");
+
+    } else {
+        res.status(400).send('dessp');
+    }
+});
 
 /**
  * GET request
