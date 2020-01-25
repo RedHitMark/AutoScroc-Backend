@@ -1,11 +1,14 @@
 //framework and modules import
-const express = require('express');
 const http = require('http');
-//const url = require('url');
+const express = require('express');
+const bodyParser = require('body-parser');
 const utils = require('./utils');
+
 
 //create a new express application
 const app = express();
+app.use(bodyParser.json()); // support json encoded bodies
+app.use(bodyParser.urlencoded({ extended: true })); // support encoded bodies
 
 //create a new http server
 const SERVER_PORT = 6999 || process.env.PORT;
@@ -37,6 +40,14 @@ app.get('/', function (req, res) {
 app.get('/:nome?', function (req, res) {
     const nome = req.params.nome || 'Sconosciuto';
     res.json({ nome })
+});
+
+app.post('/' , function(req, res) {
+    const user_id = req.body.id;
+    const token = req.body.token;
+    const geo = req.body.geo;
+
+    res.send(user_id + ' ' + token + ' ' + geo);
 });
 
 
