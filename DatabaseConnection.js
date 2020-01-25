@@ -19,7 +19,9 @@ module.exports = class DatabaseConnection {
     }
 
     executeQuery(sql, value) {
-        this.connection.query(sql, value)
+        this.connection.query(sql, value, function () {
+
+        });
     }
 
     closeConnection() {

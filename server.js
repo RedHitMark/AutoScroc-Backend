@@ -76,18 +76,17 @@ app.post('/register-test/', function (req, res) {
         db.connect();
 
         const sql = "INSERT INTO Users (name, surname, email, username, password, address, region, country, tel) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
-        const value = ['John', 'Highway 71', 'Highway 71', username, password,'Highway 71','Highway 71', 'Highway 71', 'Highway 71'];
+        const value = ['John', 'Highway 71', 'Highway 71', username, password, 'Highway 71','Highway 71', 'Highway 71', 'Highway 71'];
 
         db.executeQuery(sql, value);
 
         db.closeConnection();
 
-        res.send("registrato con successo");
-
+        const message = 'success';
+        res.json( { message } );
     } else {
-        res.status(400).json({
-            error : "you should provide all params"
-        });
+        const message = 'you should provide all params';
+        res.status(400).json({message});
     }
 });
 
