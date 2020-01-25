@@ -2,6 +2,7 @@
 const http = require('http');
 const express = require('express');
 const bodyParser = require('body-parser');
+const session = require('express-session');
 const utils = require('./utils');
 
 
@@ -9,6 +10,7 @@ const utils = require('./utils');
 const app = express();
 app.use(bodyParser.json()); // support json encoded bodies
 app.use(bodyParser.urlencoded({ extended: true })); // support encoded bodies
+app.use(session({ secret: 'keyboard cat', cookie: { maxAge: 60000 }}));
 
 //create a new http server
 const SERVER_PORT = 6999 || process.env.PORT;
@@ -22,19 +24,22 @@ server.listen(SERVER_PORT, SERVER_HOST, function () {
     const host = server.address().address;
     const port = server.address().port;
     const address = `http://${host}:${port}`;
-    console.log(`Server avviato ed in ascolto all'indirizzo: ${address} sulla porta ${port}`);
+    console.log(`Server avviato ed in ascolto all'indirizzo ${address} sulla porta ${port}`);
 });
 
+require('./login');
+
 /**
- * Get request
+ * GET request
  * @url '/'
  */
 app.get('/', function (req, res) {
-    res.send('Ciao da Express!!!');
+    req.session.view++;
+    res.send(`Ciao da Express!!! ${req.session.view}`);
 });
 
 /**
- * Get request
+ * GET request
  * @url '/:nome?'
  */
 app.get('/:nome?', function (req, res) {
@@ -42,6 +47,7 @@ app.get('/:nome?', function (req, res) {
     res.json({ nome })
 });
 
+/** POST request */
 app.post('/' , function(req, res) {
     const user_id = req.body.id;
     const token = req.body.token;
@@ -50,48 +56,13 @@ app.post('/' , function(req, res) {
     res.send(user_id + ' ' + token + ' ' + geo);
 });
 
+/** DELETE request */
+app.delete('/:nome?', function (req, res) {
+    const nome = req.params.nome || 'Sconosciuto';
+    res.json({ nome })
+});
 
-/*async function onRequest(request, response) {
-    try {
-        let client_ip = utils.getClientAddress(request);
-        let url_obj = url.parse(request.url, true);
-        let query_params = url_obj.query;
-        let path_name = url_obj.pathname;
 
-        console.log("Richiesta ricevuta da: " + client_ip);
-
-        await chaincode.init();
-
-        switch (path_name) {
-            case "/login":
-                break;
-
-            case "/registration":
-                break;
-
-            default:
-                let json_response = {
-                    message: "Not found",
-                };
-
-                //Not found
-                response.writeHead(404, {"Content-Type": "text/json"});
-                response.write(JSON.stringify(json_response));
-                response.end();
-                break;
-        }
-    } catch (e) {
-        let json_response = {
-            message: "Errore del server",
-            verbose: e.message
-        };
-
-        //Internal Server Rrror
-        response.writeHead(500, {"Content-Type": "text/json"});
-        response.write(JSON.stringify(json_response));
-        response.end();
-    }
-}*/
 
 
 
