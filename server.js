@@ -1,14 +1,22 @@
-const http = require("http");
-const url = require('url');
+const express = require('express');
+const http = require('http');
 
+const app = express();
+
+const server = http.createServer(app);
+
+
+const url = require('url');
 const utils = require('./utils');
 
+app.get('/', function (req, res) {
+    res.send('Ciao da Express!!!');
+});
 
 
-const SERVER_PORT = 6999;
 
 
-async function onRequest(request, response) {
+/*async function onRequest(request, response) {
     try {
         let client_ip = utils.getClientAddress(request);
         let url_obj = url.parse(request.url, true);
@@ -48,7 +56,14 @@ async function onRequest(request, response) {
         response.write(JSON.stringify(json_response));
         response.end();
     }
-}
+}*/
 
-http.createServer(onRequest).listen(SERVER_PORT);
-console.log("Server avviato ed in ascolto sulla porta " + SERVER_PORT);
+const SERVER_PORT = 6999 || process.env.PORT;
+const HOST = '0.0.0.0' || process.env.HOST;
+
+server.listen(SERVER_PORT, HOST, function () {
+    const host = server.address().address;
+    const port = server.address().port;
+    const address = `http://${host}:${port}`;
+    console.log(`Server avviato ed in ascolto all'indirizzo: ${address} sulla porta ${port}`);
+});
