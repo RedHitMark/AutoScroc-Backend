@@ -1,7 +1,7 @@
 const Database = require('./Database');
 const Token = require('./token');
 
-module.exports = function(req, res) {
+module.exports = (req, res) => {
     const username = req.body.username;
     const password = req.body.password;
 

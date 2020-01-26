@@ -1,48 +1,89 @@
 const Database = require('./Database');
 
-module.exports = function (req, res) {
-    const name = req.body.name;
-    const surname = req.body.surname;
-    const email = req.body.email;
-    const username = req.body.username;
-    const password = req.body.password;
-    const address = req.body.address;
-    const city = req.body.city;
-    const region = req.body.region;
-    const country = req.body.country;
-    const tel = req.body.tel;
+module.exports = {
+    registerUser: (req, res) => {
+        const user = getUserFromHTTPBody(req);
 
+        register(user, 'user').then( (jsonSuccess) => {
+            res.json(jsonSuccess);
+        }).catch( (errorObject) =>{
+            res.status(errorObject.status).json({ error : errorObject.message } );
+        });
+    },
+    registerAdmin: (req, res) => {
+        const user = getUserFromHTTPBody(req);
 
-    if (name && surname && email && username && password && address && city && region && country && tel) {
-        if (isMailValid(email)) {
-            const db = new Database();
-
-            const sql = "INSERT INTO Users (name, surname, email, username, password, address, city, region, country, tel) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-            const value = [name, surname, email, username, password, address, city, region, country, tel];
-
-            db.writeQuery(sql, value).then( (result) => {
-                if(result === 1) {
-                    res.json( {error: "success"} );
-                } else {
-                    res.status(401).json( {error: "failed"} );
-                }
-            }).catch( (sqlError) => {
-                //sql error
-                if (sqlError && sqlError.errno &&  sqlError.errno === 1062) {
-                    res.status(401).json( {error: "user already registered"} )
-                } else {
-                    res.status(501).json( {error: "generic sql error"} );
-                }
-
-            }).finally(() => {
-                db.close();
-            });
-        }
-    } else {
-        res.status(400).json( {error: "you should provide all params"} );
+        register(user, 'admin').then( (jsonSuccess) => {
+            res.json(jsonSuccess);
+        }).catch( (errorObject) =>{
+            res.status(errorObject.status).json({ error : errorObject.message });
+        });
     }
 };
 
+/**
+ * @param user : object of user parmas
+ * @param role : string role of user to register
+ * @
+ */
+function register(user, role) {
+    return new Promise((resolve, reject) => {
+        if (user.name && user.surname && user.email && user.username && user.password && user.address && user.city && user.region && user.country && user.tel) {
+            if (isMailValid(user.email)) {
+                const db = new Database();
+
+                const sql = "INSERT INTO Users (name, surname, email, username, password, address, city, region, country, tel, role) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                const value = [user.name, user.surname, user.email, user.username, user.password, user.address, user.city, user.region, user.country, user.tel, role];
+
+                db.writeQuery(sql, value).then((result) => {
+                    if (result === 1) {
+                        resolve({message: "success"} );
+                    } else {
+                        reject({status: 401, message: "failed"});
+                    }
+                }).catch((sqlError) => {
+                    //sql error
+                    if (sqlError && sqlError.errno && sqlError.errno === 1062) {
+                        reject({status: 401, message: "user already registered"});
+                    } else {
+                        reject({status: 501, message: "generic sql error"});
+                    }
+
+                }).finally(() => {
+                    db.close();
+                });
+            }
+        } else {
+            reject({status: 400, message: "you should provide all params"});
+        }
+    });
+}
+
+
+
+/**
+ * @param req : object of http request body
+ */
+function getUserFromHTTPBody(req) {
+    return {
+        name: req.body.name,
+        email: req.body.surname,
+        username: req.body.email,
+        password: req.body.password,
+        address: req.body.address,
+        city: req.body.city,
+        region: req.body.region,
+        country: req.body.country,
+        tel: req.body.tel
+    };
+}
+
+/**
+ * Check if a mail is formatted correctly
+ *
+ * @param email : string of mail to check
+ * @returns {boolean} : true if email is correct, false otherwise
+ */
 function isMailValid(email) {
     const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     return re.test(String(email).toLowerCase());

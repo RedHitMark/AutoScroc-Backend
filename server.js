@@ -27,9 +27,27 @@ server.listen(SERVER_PORT, SERVER_HOST, function () {
     console.log(`Server avviato ed in ascolto all'indirizzo ${address} sulla porta ${port}\n il server è stato acceso al secondo: ${+new Date()}`);
 });
 
+
+const registration = require('./register');
+
+/** USER LOGIN API **/
 app.post('/login/', require('./login'));
-app.post('/register/', require('./register'));
-app.post('/register_admin/', require('./register_admin'));
+
+/** USER REGISTER API **/
+app.post('/register/', (req, res) => {
+    registration.registerUser(req, res);
+});
+
+/** ADMIN REGISTER API **/
+app.post('/register_admin/', (req, res) => {
+    registration.registerAdmin(req, res);
+});
+
+
+
+/** RENT **/
+//app.post('/rent/', require('./rent'));
+
 
 /** TODO: REMOVE this code **/
 
@@ -38,7 +56,6 @@ app.post('/register_admin/', require('./register_admin'));
  * @url '/'
  */
 app.get('/', function (req, res) {
-
     req.session.view++;
     res.send(`Ciao da Express!!! ${req.session.view}`);
 });
