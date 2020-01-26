@@ -42,7 +42,6 @@ function register(user, role) {
                         reject({status: 401, message: "failed"});
                     }
                 }).catch((sqlError) => {
-                    //sql error
                     if (sqlError && sqlError.errno && sqlError.errno === 1062) {
                         reject({status: 401, message: "user already registered"});
                     } else {
@@ -52,6 +51,8 @@ function register(user, role) {
                 }).finally(() => {
                     db.close();
                 });
+            } else {
+                reject({status: 400, message: "email not valid"});
             }
         } else {
             reject({status: 400, message: "you should provide all params"});
@@ -67,8 +68,9 @@ function register(user, role) {
 function getUserFromHTTPBody(req) {
     return {
         name: req.body.name,
-        email: req.body.surname,
-        username: req.body.email,
+        surname: req.body.surname,
+        email: req.body.email,
+        username: req.body.username,
         password: req.body.password,
         address: req.body.address,
         city: req.body.city,
