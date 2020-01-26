@@ -34,7 +34,7 @@ module.exports = function (req, res) {
                 } else {
                     res.status(501).json( {error: "generic sql error"} );
                 }
-                console.log(sqlError);
+
 
             }).finally(() => {
                 db.close();
