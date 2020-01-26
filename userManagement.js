@@ -1,22 +1,33 @@
 const Database = require('./Database');
+const Token = require('./token');
 
 module.exports = {
     registerUser: (req, res) => {
-        const user = getUserFromHTTPBody(req);
+        const user = getUserRegistrationFromHTTPBody(req);
 
-        register(user, 'user').then( (jsonSuccess) => {
+        register(user, 'user').then((jsonSuccess) => {
             res.json(jsonSuccess);
-        }).catch( (errorObject) =>{
-            res.status(errorObject.status).json({ error : errorObject.message } );
+        }).catch((errorObject) => {
+            res.status(errorObject.status).json({error: errorObject.message});
         });
     },
     registerAdmin: (req, res) => {
-        const user = getUserFromHTTPBody(req);
+        const user = getUserRegistrationFromHTTPBody(req);
 
-        register(user, 'admin').then( (jsonSuccess) => {
+        register(user, 'admin').then((jsonSuccess) => {
             res.json(jsonSuccess);
-        }).catch( (errorObject) =>{
-            res.status(errorObject.status).json({ error : errorObject.message });
+        }).catch((errorObject) => {
+            res.status(errorObject.status).json({error: errorObject.message});
+        });
+    },
+    login: (req, res) => {
+        const username = req.body.username;
+        const password = req.body.password;
+
+        loginUser(username, password).then( (token) => {
+            res.json({token: token});
+        }).catch((errorObject) => {
+            res.status(errorObject.status).json({error: errorObject.message});
         });
     }
 };
@@ -37,7 +48,7 @@ function register(user, role) {
 
                 db.writeQuery(sql, value).then((result) => {
                     if (result === 1) {
-                        resolve({message: "success"} );
+                        resolve({message: "success"});
                     } else {
                         reject({status: 401, message: "failed"});
                     }
@@ -60,12 +71,39 @@ function register(user, role) {
     });
 }
 
+function loginUser(username, password) {
+    return new Promise((resolve, reject) => {
+        if (username && password) {
+            const db = new Database();
 
+            const sql = "SELECT id FROM Users WHERE username=? AND password = ?";
+            const value = [username, password];
+
+            db.readQuery(sql, value).then((users) => {
+                if (users.length === 1) {
+                    Token.generateToken(users[0].id).then((token) => {
+                        resolve(token);
+                    }).catch(() => {
+                        reject({status: 300, message: "cannot generate token"});
+                    });
+                } else {
+                    reject({status: 401, message: "wrong username or password"});
+                }
+            }).catch((sqlError) => {
+                reject({status: 501, message: "sql error"});
+            }).finally(() => {
+                db.close();
+            });
+        } else {
+            reject({status: 400, message: "you should provide all params"});
+        }
+    });
+}
 
 /**
  * @param req : object of http request body
  */
-function getUserFromHTTPBody(req) {
+function getUserRegistrationFromHTTPBody(req) {
     return {
         name: req.body.name,
         surname: req.body.surname,

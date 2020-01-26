@@ -28,19 +28,21 @@ server.listen(SERVER_PORT, SERVER_HOST, function () {
 });
 
 
-const registration = require('./register');
+const userManagement = require('./userManagement');
 
 /** USER LOGIN API **/
-app.post('/login/', require('./login'));
+app.post('/login/', (req, res) => {
+    userManagement.login(req, res);
+});
 
 /** USER REGISTER API **/
 app.post('/register/', (req, res) => {
-    registration.registerUser(req, res);
+    userManagement.registerUser(req, res);
 });
 
 /** ADMIN REGISTER API **/
 app.post('/register_admin/', (req, res) => {
-    registration.registerAdmin(req, res);
+    userManagement.registerAdmin(req, res);
 });
 
 
