@@ -24,11 +24,12 @@ server.listen(SERVER_PORT, SERVER_HOST, function () {
     const host = server.address().address;
     const port = server.address().port;
     const address = `http://${host}:${port}`;
-    console.log(`Server avviato ed in ascolto all'indirizzo ${address} sulla porta ${port}\nUnix time: ${+new Date()}`);
+    console.log(`Server avviato ed in ascolto all'indirizzo ${address} sulla porta ${port}\n il server è stato acceso al secondo: ${+new Date()}`);
 });
 
 app.post('/login/', require('./login'));
 app.post('/register/', require('./register'));
+app.post('/register_admin/', require('./register_admin'));
 
 /** TODO: REMOVE this code **/
 
@@ -51,7 +52,7 @@ app.get('/:nome?', function (req, res) {
     res.json({ nome })
 });
 
-/** POST request */
+/** POSTrequest */
 app.post('/' , function(req, res) {
     const user_id = req.body.id;
     const token = req.body.token;
