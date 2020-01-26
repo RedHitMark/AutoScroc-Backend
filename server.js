@@ -57,11 +57,13 @@ app.post('/' , function(req, res) {
     const token = req.body.token;
     const geo = req.body.geo;
 
-    if (Token.isTokenValid(token)) {
-        res.send(user_id + ' ' + token + ' ' + geo);
-    } else {
-        res.send('not valid');
-    }
+    Token.isTokenValid(token).then((isValid) => {
+        if(isValid) {
+            res.send(user_id + ' ' + token + ' ' + geo);
+        } else {
+            res.send('not valid');
+        }
+    });
 });
 
 /** DELETE request */

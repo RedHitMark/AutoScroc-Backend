@@ -1,8 +1,6 @@
-//const mysql = require('mysql');
-const DatabaseConnection = require('./DatabaseConnection');
+const Database = require('./Database');
 
 module.exports = function (req, res) {
-
     const name = req.body.name;
     const surname = req.body.surname;
     const email = req.body.email;
@@ -17,21 +15,28 @@ module.exports = function (req, res) {
 
     if (name && surname && email && username && password && address && city && region && country && tel) {
         if (isMailValid(email)) {
-            const db = DatabaseConnection.getConnection();
+            const db = new Database();
 
             const sql = "INSERT INTO Users (name, surname, email, username, password, address, city, region, country, tel) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
             const value = [name, surname, email, username, password, address, city, region, country, tel];
 
-            //@TODO gestore errori my sql
-            db.query(sql, value, (err, result) => {
-                if(err) {
-                    res.json({message : 'cannot register'});
+            db.writeQuery(sql, value).then( (result) => {
+                if(result === 1) {
+                    res.json( {error: "success"} );
+                } else {
+                    res.status(401).json( {error: "failed"} );
+                }
+            }).catch( (sqlError) => {
+                //sql error
+                if (sqlError && sqlError.errno &&  sqlError.errno === 1062) {
+                    res.status(401).json( {error: "user already registered"} )
+                } else {
+                    res.status(501).json( {error: "generic sql error"} );
                 }
 
-                res.json({message : 'success'});
+            }).finally(() => {
+                db.close();
             });
-
-            db.end();
         }
     } else {
         res.status(400).json( {error: "you should provide all params"} );

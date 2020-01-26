@@ -1,44 +1,64 @@
-const DatabaseConnection = require('./DatabaseConnection');
+const Database = require('./Database');
 
 module.exports = {
-    isTokenValid: async (token) => {
-        const timestamp = await retriveTokenTimestamp(token);
+    isTokenValid: (token) => {
+        return new Promise( (resolve) => {
+            retriveTokenTimestamp(token).then( (timestamp) => {
+                console.log(timestamp);
+                console.log(+new Date());
+                console.log(+new Date() - timestamp);
 
-        return (+new Date() - timestamp) <= 600000; //10 minutes
+                resolve( (+new Date() - timestamp) <= 600000 ); //10 minutes
+            }).catch( (err) => {
+                resolve(false);
+            });
+        });
     },
     generateToken: (userid) => {
-        const token = getRandomString(20);
+        return new Promise((resolve, reject) => {
+            const token = getRandomString(20);
 
-        insertToken(token, userid);
-
-        return token;
+            insertToken(token, userid).then(() => {
+                resolve(token);
+            }).catch((err) => {
+                reject()
+            });
+        });
     }
 };
 
 
 function insertToken(token, userid) {
-    const db = DatabaseConnection.getConnection();
+    return new Promise((resolve, reject) => {
+        const db = new Database();
 
-    const sql = "INSERT INTO Tokens (token, user, timestamp) VALUES (?, ?, ?)";
-    const value = [token, userid, +new Date()];
+        const sql = "INSERT INTO Tokens (token, user, timestamp) VALUES (?, ?, ?)";
+        const value = [token, userid, +new Date()];
 
-    db.query(sql, value, (err, result) => {
-        if(err) { throw err}
+        db.writeQuery(sql, value).then( () => {
+            resolve();
+        }).catch( (err) => {
+            reject(err);
+        }).finally(() => {
+            db.close();
+        });
     });
 }
 
 async function retriveTokenTimestamp(token) {
-    const db = DatabaseConnection.getConnection();
+    return new Promise((resolve, reject) => {
+        const db = new Database();
 
-    const sql = "SELECT timestamp FROM Tokens WHERE token = ?";
-    const value = [token];
+        const sql = "SELECT timestamp FROM Tokens WHERE token = ?";
+        const value = [token];
 
-    db.query(sql, value, (err, tokens) => {
-        if(err) { throw err}
-
-        if(tokens.length === 1) {
-            return tokens[0].timestamp;
-        }
+        db.readQuery(sql, value).then( (result) => {
+            resolve(result[0].timestamp);
+        }).catch( (err) => {
+            reject(err);
+        }).finally(() => {
+            db.close();
+        });
     });
 }
 

@@ -1,4 +1,4 @@
-const DatabaseConnection = require('./DatabaseConnection');
+const Database = require('./Database');
 const Token = require('./token');
 
 module.exports = function(req, res) {
@@ -6,28 +6,27 @@ module.exports = function(req, res) {
     const password = req.body.password;
 
     if (username && password) {
-        const db = DatabaseConnection.getConnection();
+        const db = new Database();
+
 
         const sql = "SELECT id FROM Users WHERE username=? AND password = ?";
         const value = [username, password];
 
-        db.query(sql, value, (err, users) => {
-            if(err) {
-                res.json({message : 'cannot login'});
-            }
-
+        db.readQuery(sql, value).then((users) => {
             if(users.length === 1) {
-                //Generating a token
-                const token = Token.generateToken(users[0].id);
-
-                res.json({token : token});
-                db.end();
+                Token.generateToken(users[0].id).then((token) => {
+                    res.json({token : token});
+                }).catch( () => {
+                    res.status(300).json({message : 'cannot generate token'})
+                });
             } else {
                 res.status(401).json({message : 'wrong username or password'});
             }
+        }).catch((sqlError) => {
+            res.status(501).json({error : 'sql error'});
+        }).finally(() => {
+            db.close();
         });
-
-
     } else {
         const message = 'you should provide all params';
         res.status(400).json({message});
