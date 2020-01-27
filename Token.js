@@ -2,14 +2,14 @@ const Database = require('./Database');
 
 module.exports = {
     isTokenValid: (token) => {
-        return new Promise( (resolve) => {
-            retriveTokenTimestamp(token).then( (timestamp) => {
+        return new Promise((resolve) => {
+            retriveTokenTimestamp(token).then((timestamp) => {
                 console.log(timestamp);
                 console.log(+new Date());
                 console.log(+new Date() - timestamp);
 
-                resolve( (+new Date() - timestamp) <= 600000 ); //10 minutes
-            }).catch( (err) => {
+                resolve((+new Date() - timestamp) <= 600000); //10 minutes
+            }).catch((err) => {
                 resolve(false);
             });
         });
@@ -35,9 +35,9 @@ function insertToken(token, userid) {
         const sql = "INSERT INTO Tokens (token, user, timestamp) VALUES (?, ?, ?)";
         const value = [token, userid, +new Date()];
 
-        db.writeQuery(sql, value).then( () => {
+        db.writeQuery(sql, value).then(() => {
             resolve();
-        }).catch( (err) => {
+        }).catch((err) => {
             reject(err);
         }).finally(() => {
             db.close();
@@ -52,9 +52,9 @@ async function retriveTokenTimestamp(token) {
         const sql = "SELECT timestamp FROM Tokens WHERE token = ?";
         const value = [token];
 
-        db.readQuery(sql, value).then( (result) => {
+        db.readQuery(sql, value).then((result) => {
             resolve(result[0].timestamp);
-        }).catch( (err) => {
+        }).catch((err) => {
             reject(err);
         }).finally(() => {
             db.close();

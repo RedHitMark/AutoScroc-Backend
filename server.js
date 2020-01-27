@@ -3,7 +3,7 @@ const http = require('http');
 const express = require('express');
 const bodyParser = require('body-parser');
 const session = require('express-session');
-const Token = require('./token');
+const Token = require('./Token');
 
 
 //create a new express application
@@ -30,17 +30,17 @@ server.listen(SERVER_PORT, SERVER_HOST, function () {
 
 const userManagement = require('./userManagement');
 
-/** USER LOGIN API **/
+/** USER LOGIN API END-POINT**/
 app.post('/login/', (req, res) => {
     userManagement.login(req, res);
 });
 
-/** USER REGISTER API **/
+/** USER REGISTER API END-POINT**/
 app.post('/register/', (req, res) => {
     userManagement.registerUser(req, res);
 });
 
-/** ADMIN REGISTER API **/
+/** ADMIN REGISTER API END-POINT**/
 app.post('/register_admin/', (req, res) => {
     userManagement.registerAdmin(req, res);
 });

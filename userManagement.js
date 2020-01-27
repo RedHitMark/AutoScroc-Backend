@@ -1,5 +1,5 @@
 const Database = require('./Database');
-const Token = require('./token');
+const Token = require('./Token');
 
 module.exports = {
     registerUser: (req, res) => {
