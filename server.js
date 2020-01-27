@@ -47,9 +47,18 @@ app.post('/register_admin/', (req, res) => {
 
 
 
+const rentManagement = require('./rentManagement');
 /** RENT **/
-//app.post('/rent/', require('./rent'));
-
+app.get('/rent/page/:idPage', (req, res) => {
+    const idPage = req.params.idPage || 1;
+    rentManagement.getAll(req, res, idPage);
+});
+/*
+app.get('/rent/:id', require('./rent'));
+app.post('/rent/', require('./rent'));
+app.put('/rent/:id', require('./rent'));
+app.delete('/rent/:id', require('./rent'));
+*/
 
 /** TODO: REMOVE this code **/
 
@@ -59,7 +68,7 @@ app.post('/register_admin/', (req, res) => {
  */
 app.get('/', function (req, res) {
     req.session.view++;
-    res.send(`Ciao da Express!!! ${req.session.view}`);
+    res.send(`Ciao da Express!!!`);
 });
 
 /**
@@ -76,7 +85,7 @@ app.post('/' , function(req, res) {
     const user_id = req.body.id;
     const token = req.body.token;
     const geo = req.body.geo;
-
+    res.send(user_id);
     Token.isTokenValid(token).then((isValid) => {
         if(isValid) {
             res.send(user_id + ' ' + token + ' ' + geo);
