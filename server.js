@@ -2,7 +2,7 @@
 const http = require('http');
 const express = require('express');
 const bodyParser = require('body-parser');
-const session = require('express-session');
+//const session = require('express-session');
 const Token = require('./Token');
 
 
@@ -10,7 +10,7 @@ const Token = require('./Token');
 const app = express();
 app.use(bodyParser.json()); // support json encoded bodies
 app.use(bodyParser.urlencoded({ extended: true })); // support encoded bodies
-app.use(session({ secret: 'keyboard cat', cookie: { maxAge: 60000 }}));
+//app.use(session({ secret: 'keyboard cat', cookie: { maxAge: 60000 }}));
 
 //create a new http server
 const SERVER_PORT = 6999 || process.env.PORT;
@@ -45,6 +45,11 @@ app.post('/register_admin/', (req, res) => {
     userManagement.registerAdmin(req, res);
 });
 
+/** ADMIN REGISTER API END-POINT**/
+app.post('/get_profile/', (req, res) => {
+    userManagement.getProfile(req, res);
+});
+
 
 
 const rentManagement = require('./rentManagement');
@@ -60,25 +65,8 @@ app.put('/rent/:id', require('./rent'));
 app.delete('/rent/:id', require('./rent'));
 */
 
-/** TODO: REMOVE this code **/
 
-/**
- * GET request
- * @url '/'
- */
-app.get('/', function (req, res) {
-    req.session.view++;
-    res.send(`Ciao da Express!!!`);
-});
 
-/**
- * GET request
- * @url '/:nome?'
- */
-app.get('/:nome?', function (req, res) {
-    const nome = req.params.nome || 'Sconosciuto';
-    res.json({ nome })
-});
 
 /** POSTrequest */
 app.post('/' , function(req, res) {
@@ -86,17 +74,9 @@ app.post('/' , function(req, res) {
     const token = req.body.token;
     const geo = req.body.geo;
     res.send(user_id);
-    Token.isTokenValid(token).then((isValid) => {
-        if(isValid) {
-            res.send(user_id + ' ' + token + ' ' + geo);
-        } else {
-            res.send('not valid');
-        }
+    Token.isTokenValid(token).then(() => {
+        res.send(user_id + ' ' + token + ' ' + geo);
+    }).catch( () => {
+        res.send('not valid');
     });
-});
-
-/** DELETE request */
-app.delete('/:nome?', function (req, res) {
-    const nome = req.params.nome || 'Sconosciuto';
-    res.json({ nome })
 });

@@ -23,11 +23,27 @@ module.exports = {
     login: (req, res) => {
         const username = req.body.username;
         const password = req.body.password;
+        const uuid = req.body.uuid;
 
-        loginUser(username, password).then( (token) => {
+        loginUser(username, password, uuid).then( (token) => {
             res.json({token: token});
         }).catch((errorObject) => {
             res.status(errorObject.status).json({error: errorObject.message});
+        });
+    },
+    getProfile: (req, res) => {
+        const token = req.body.token;
+        const uuid = req.body.uuid;
+
+        Token.isTokenValid(token).then(() => {
+            getUserProfile(token, uuid).then((user) => {
+                res.json(user);
+            }).catch((errorObject) => {
+                res.status(errorObject.status).json({error: errorObject.message});
+            });
+        }).catch(() => {
+            //401: Unauthorized
+            res.status(401).json({error: errorObject.message});
         });
     }
 };
@@ -49,56 +65,105 @@ function register(user, role) {
                 db.writeQuery(sql, value).then((result) => {
                     if (result === 1) {
                         resolve({message: "success"});
-                    } else {
-                        reject({status: 401, message: "failed"});
-                    }
-                }).catch((sqlError) => {
-                    if (sqlError && sqlError.errno && sqlError.errno === 1062) {
-                        reject({status: 401, message: "user already registered"});
-                    } else {
-                        reject({status: 501, message: "generic sql error"});
                     }
 
+                    //500: Internal server error
+                    reject({status: 500, message: "failed"});
+                }).catch((sqlError) => {
+                    if (sqlError && sqlError.errno && sqlError.errno === 1062) {
+                        //406: Not acceptable
+                        reject({status: 406, message: "user already registered"});
+                    }
+
+                    //500: Internal server error
+                    reject({status: 500, message: "generic sql error"});
                 }).finally(() => {
                     db.close();
                 });
-            } else {
-                reject({status: 400, message: "email not valid"});
             }
-        } else {
-            reject({status: 400, message: "you should provide all params"});
+            //406: Not acceptable
+            reject({status: 406, message: "email not valid"});
         }
+
+        //400: Bad request
+        reject({status: 400, message: "you should provide all params"});
     });
 }
 
-function loginUser(username, password) {
+/**
+ *
+ * @param username : string
+ * @param password : string
+ * @param uuid : string
+ * @returns {Promise<string | Object>}
+ */
+function loginUser(username, password, uuid) {
     return new Promise((resolve, reject) => {
-        if (username && password) {
+        if (username && password && uuid) {
             const db = new Database();
 
-            const sql = "SELECT id FROM Users WHERE username=? AND password = ?";
+            const sql = "SELECT id FROM Users WHERE username=? AND password=?";
             const value = [username, password];
 
             db.readQuery(sql, value).then((users) => {
                 if (users.length === 1) {
-                    Token.generateToken(users[0].id).then((token) => {
+                    Token.generateToken(users[0].id, uuid).then((token) => {
                         resolve(token);
                     }).catch(() => {
-                        reject({status: 300, message: "cannot generate token"});
+                        //500: Internal server error
+                        reject({status: 500, message: "cannot generate token"});
                     });
-                } else {
-                    reject({status: 401, message: "wrong username or password"});
                 }
+
+                //401: Unauthorized
+                reject({status: 401, message: "wrong username or password"});
             }).catch((sqlError) => {
-                reject({status: 501, message: "sql error"});
+                //500: Internal server error
+                reject({status: 500, message: "sql error"});
             }).finally(() => {
                 db.close();
             });
-        } else {
-            reject({status: 400, message: "you should provide all params"});
         }
+
+        //400: Bad request
+        reject({status: 400, message: "you should provide all params"});
     });
 }
+
+
+function getUserProfile(token, uuid) {
+    return new Promise((resolve, reject) => {
+        if (token && uuid) {
+            Token.isTokenValid(token, uuid).then(() => {
+                const db = new Database();
+
+                const sql = "SELECT Users.name, Users.surname, Users.email, Users.role FROM Users INNER JOIN Tokens ON Tokens.user=Users.id WHERE Tokens.token=? AND Tokens.uuid=?";
+                const value = [token, uuid];
+
+                db.readQuery(sql, value).then((users) => {
+                    if (users.length === 1) {
+                        resolve(users[0]);
+                    }
+
+                    //401: Unauthorized
+                    reject({status: 401, message: "token not valid"});
+                }).catch((sqlError) => {
+                    //500: Internal server error
+                    reject({status: 500, message: "sql error"});
+                }).finally(() => {
+                    db.close();
+                });
+            }).catch(() => {
+                //401: Unauthorized
+                reject({status: 401, message: "token expired"});
+            });
+        }
+
+        //400: Bad request
+        reject({status: 400, message: "you should provide all params"});
+    });
+}
+
 
 /**
  * @param req : object of http request body
