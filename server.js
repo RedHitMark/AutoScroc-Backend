@@ -52,8 +52,8 @@ app.post('/get_profile/', (req, res) => {
 
 const rentManagement = require('./rentManagement');
 /** RENT **/
-app.get('/rent/page/:idPage', (req, res) => {
-    const idPage = req.params.idPage || 1;
+app.get('/rent/page', (req, res) => {
+    const idPage = req.query.idPage || 1;
     rentManagement.getAll(req, res, idPage);
 });
 /*
