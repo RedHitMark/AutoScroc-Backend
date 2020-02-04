@@ -12,8 +12,6 @@ module.exports = (app) => {
         const password = req.body.password;
         const uuid = req.body.uuid;
 
-        console.log(username, password, uuid);
-
         userManagement.login(username, password, uuid)
             .then((token) => {
                 res.json({token: token});
