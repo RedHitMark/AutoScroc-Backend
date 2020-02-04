@@ -23,7 +23,6 @@ app.use((req, res) => {
     res.status(404);
 });
 
-
 /**
  * Bind server to SERVER_PORT and SERVER_HOST
  */
