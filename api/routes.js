@@ -15,8 +15,7 @@ module.exports = (app) => {
         userManagement.login(username, password, uuid)
             .then((token) => {
                 res.json({token: token});
-            })
-            .catch((error) => {
+            }).catch((error) => {
                 res.status(error.status).json({error: error.message});
             });
     });
@@ -28,8 +27,7 @@ module.exports = (app) => {
         userManagement.register(user, 'user')
             .then((jsonSuccess) => {
                 res.json(jsonSuccess);
-            })
-            .catch((error) => {
+            }).catch((error) => {
                 res.status(error.status).json({error: error.message});
             });
     });
@@ -42,8 +40,7 @@ module.exports = (app) => {
         userManagement.register(user, 'admin')
             .then((jsonSuccess) => {
                 res.json(jsonSuccess);
-            })
-            .catch((error) => {
+            }).catch((error) => {
                 res.status(error.status).json({error: error.message});
             });
     });
@@ -81,8 +78,7 @@ module.exports = (app) => {
         rentManagement.getRents(idPage)
             .then((result) => {
                 res.json(result);
-            })
-            .catch((err) => {
+            }).catch((err) => {
 
             });
     });
