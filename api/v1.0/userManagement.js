@@ -100,7 +100,7 @@ function getUserProfile(token, uuid) {
                 .then(() => {
                     const db = new Database();
 
-                    const sql = "SELECT Users.name, Users.surname, Users.email, Users.role FROM Users INNER JOIN Tokens ON Tokens.user=Users.id WHERE Tokens.token=? AND Tokens.uuid=?";
+                    const sql = "SELECT Users.name, Users.surname, Users.email, Users.img, Users.role FROM Users INNER JOIN Tokens ON Tokens.user=Users.id WHERE Tokens.token=? AND Tokens.uuid=?";
                     const value = [token, uuid];
 
                     db.readQuery(sql, value)

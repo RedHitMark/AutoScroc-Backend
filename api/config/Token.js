@@ -11,7 +11,7 @@ async function generateToken(userid, uuid) {
 
         db.writeQuery(sql, value)
             .then(() => {
-                resolve();
+                resolve(token);
             }).catch((err) => {
                 reject(err);
             }).finally(() => {

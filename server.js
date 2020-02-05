@@ -15,6 +15,14 @@ const SERVER_PORT = 6999 || process.env.PORT;
 const SERVER_HOST = '0.0.0.0' || process.env.HOST;
 const server = http.createServer(app);
 
+//load all routers
+const routes = require('./api/routes')(app);
+
+//fall back
+app.use((req, res) => {
+    res.status(404);
+});
+
 /**
  * Bind server to SERVER_PORT and SERVER_HOST
  */
@@ -24,5 +32,3 @@ server.listen(SERVER_PORT, SERVER_HOST, function () {
     const address = `http://${host}:${port}`;
     console.log(`Server avviato ed in ascolto all'indirizzo ${address} sulla porta ${port}\n il server è stato acceso al secondo: ${+new Date()}`);
 });
-
-const routes = require('./api/routes')(app);

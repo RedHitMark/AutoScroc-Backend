@@ -11,12 +11,12 @@ module.exports = (app) => {
         const username = req.body.username;
         const password = req.body.password;
         const uuid = req.body.uuid;
+        //console.log(username, password, uuid);
 
         userManagement.login(username, password, uuid)
             .then((token) => {
                 res.json({token: token});
-            })
-            .catch((error) => {
+            }).catch((error) => {
                 res.status(error.status).json({error: error.message});
             });
     });
@@ -28,8 +28,7 @@ module.exports = (app) => {
         userManagement.register(user, 'user')
             .then((jsonSuccess) => {
                 res.json(jsonSuccess);
-            })
-            .catch((error) => {
+            }).catch((error) => {
                 res.status(error.status).json({error: error.message});
             });
     });
@@ -42,8 +41,7 @@ module.exports = (app) => {
         userManagement.register(user, 'admin')
             .then((jsonSuccess) => {
                 res.json(jsonSuccess);
-            })
-            .catch((error) => {
+            }).catch((error) => {
                 res.status(error.status).json({error: error.message});
             });
     });
@@ -81,8 +79,7 @@ module.exports = (app) => {
         rentManagement.getRents(idPage)
             .then((result) => {
                 res.json(result);
-            })
-            .catch((err) => {
+            }).catch((err) => {
 
             });
     });
@@ -92,15 +89,19 @@ module.exports = (app) => {
      * NOT FOUND FALL-BACK
      */
     app.get('*', (req, res) => {
+        console.log('GET fall back');
         res.status(404).json({message : "not found on this server"});
     });
     app.post('*', (req, res) => {
+        console.log('POST fall back');
         res.status(404).json({message : "not found on this server"});
     });
     app.delete('*', (req, res) => {
+        console.log('DELETE fall back');
         res.status(404).json({message : "not found on this server"});
     });
     app.put('*', (req, res) => {
+        console.log('PUT fall back');
         res.status(404).json({message : "not found on this server"});
     })
 };
