@@ -21,8 +21,8 @@ async function getRents(idPage) {
     return new Promise((resolve, reject) => {
         const db = new Database();
 
-        const sql = "SELECT Rent.licensePlate, Rent.matriculationYear, Rent.price, Cars.name, Cars.engineType FROM Rent LEFT JOIN Cars ON Rent.idCar=Cars.id LIMIT 2 OFFSET ?;";
-        const value = [(idPage - 1) * 2];
+        const sql = "SELECT Rent.licensePlate, Rent.matriculationYear, Rent.price, Cars.name, Cars.engineType FROM Rent LEFT JOIN Cars ON Rent.idCar=Cars.id LIMIT 10 OFFSET ?;";
+        const value = [(idPage - 1) * 10];
 
         db.readQuery(sql, value).then((result) => {
             resolve(result);
