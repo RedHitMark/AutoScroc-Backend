@@ -79,7 +79,7 @@ module.exports = (app) => {
         rentManagement.getRents(idPage)
             .then((result) => {
                 res.json(result);
-            }).catch((err) => {
+            }).catch((error) => {
 
             });
     });
