@@ -164,6 +164,24 @@ function revalidateUser(token, uuid, secret) {
     });
 }
 
+function logout(token) {
+    return new Promise((resolve, reject) => {
+        if (token) {
+            Token.deleteToken(token)
+                .then(() => {
+                    resolve({message : "success"});
+                })
+                .catch((error) => {
+                    reject({status: 500, message: "unable to delete token"});
+                })
+
+        } else {
+            //400: Bad request
+            reject({status: 400, message: "you should provide all params"});
+        }
+    });
+}
+
 /**
  * Check if a mail is formatted correctly
  *
@@ -180,5 +198,6 @@ module.exports = {
     register,
     login,
     getUserProfile,
-    revalidateUser
+    revalidateUser,
+    logout
 };

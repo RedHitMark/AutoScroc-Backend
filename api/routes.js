@@ -66,8 +66,20 @@ module.exports = (app) => {
         const secret = req.body.secret;
 
         userManagement.revalidateUser(token, uuid, secret)
-            .then((user) => {
-                res.json(user);
+            .then((jsonSuccess) => {
+                res.json(jsonSuccess);
+            }).catch((error) => {
+                res.status(error.status).json({error: error.message});
+            });
+    });
+
+    /** LOGOUT USER API END-POINT**/
+    app.post(BASE_API_URL + API_VERSION_1_0 + '/logout/', (req, res) => {
+        const token = req.body.token;
+
+        userManagement.logout(token)
+            .then((jsonSuccess) => {
+                res.json(jsonSuccess);
             }).catch((error) => {
                 res.status(error.status).json({error: error.message});
             });

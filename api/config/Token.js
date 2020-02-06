@@ -67,6 +67,27 @@ async function refreshToken(token, uuid)  {
     });
 }
 
+async function deleteToken(token)  {
+    return new Promise( (resolve, reject) => {
+        const db = new Database();
+
+        const sql = "DELETE FROM Tokens WHERE token = ?";
+        const value = [token];
+
+        db.writeQuery(sql, value)
+            .then((numUpdates) => {
+                if(numUpdates === 1) {
+                    resolve();
+                }
+                reject('cannot delete');
+            }).catch((err) => {
+                reject(err);
+            }).finally(() => {
+                db.close();
+            });
+    });
+}
+
 function getRandomString(length) {
     const chars = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!?@#$%^&*()_';
     let result = '';
@@ -77,5 +98,6 @@ function getRandomString(length) {
 module.exports = {
     generateToken,
     isTokenValid,
-    refreshToken
+    refreshToken,
+    deleteToken
 };
