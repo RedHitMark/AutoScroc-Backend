@@ -76,8 +76,9 @@ module.exports = (app) => {
     /** LOGOUT USER API END-POINT**/
     app.post(BASE_API_URL + API_VERSION_1_0 + '/logout/', (req, res) => {
         const token = req.body.token;
+        const uuid = req.body.uuid;
 
-        userManagement.logout(token)
+        userManagement.logout(token, uuid)
             .then((jsonSuccess) => {
                 res.json(jsonSuccess);
             }).catch((error) => {

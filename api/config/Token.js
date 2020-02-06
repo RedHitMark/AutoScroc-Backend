@@ -67,11 +67,11 @@ async function refreshToken(token, uuid)  {
     });
 }
 
-async function deleteToken(token)  {
+async function deleteToken(token, uuid)  {
     return new Promise( (resolve, reject) => {
         const db = new Database();
 
-        const sql = "DELETE FROM Tokens WHERE token = ?";
+        const sql = "DELETE FROM Tokens WHERE token = ? and uuid =?";
         const value = [token];
 
         db.writeQuery(sql, value)
