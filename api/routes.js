@@ -5,6 +5,7 @@ module.exports = (app) => {
     const bodyBind = require('./v1.0/bodyBind');
     const userManagement = require('./v1.0/userManagement');
     const rentManagement = require('./v1.0/rentManagement');
+    const saleManagement = require('./v1.0/saleManagement');
 
     /** USER LOGIN API END-POINT**/
     app.post(BASE_API_URL + API_VERSION_1_0 + '/login/', (req, res) => {
@@ -90,6 +91,16 @@ module.exports = (app) => {
     app.get(BASE_API_URL + API_VERSION_1_0 + '/rent', (req, res) => {
         const idPage = req.query.idPage || 1;
         rentManagement.getRents(idPage)
+            .then((result) => {
+                res.json(result);
+            }).catch((error) => {
+
+            });
+    });
+
+    app.get(BASE_API_URL + API_VERSION_1_0 + '/sales', (req, res) => {
+        const idPage = req.query.idPage || 1;
+        saleManagement.getSales(idPage)
             .then((result) => {
                 res.json(result);
             }).catch((error) => {
