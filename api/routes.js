@@ -132,7 +132,7 @@ module.exports = (app) => {
     app.get(BASE_API_URL + API_VERSION_1_0 + '/explorer/cars/', (req, res) => {
         const idModel = req.query.idModel || 1;
 
-        explorerManagement.getCarsByModelId(idModel)
+        explorerManagement.getCarsByModelID(idModel)
             .then((result) => {
                 res.json(result);
             }).catch((error) => {
