@@ -118,6 +118,17 @@ module.exports = (app) => {
             });
     });
 
+    app.get(BASE_API_URL + API_VERSION_1_0 + '/explorer/models/', (req, res) => {
+        const idBrand = req.query.idBrand || 1;
+
+        explorerManagement.getModelsByBrand(idBrand)
+            .then((result) => {
+                res.json(result);
+            }).catch((error) => {
+
+        });
+    });
+
 
     /**
      * NOT FOUND FALL-BACK
