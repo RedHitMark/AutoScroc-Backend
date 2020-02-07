@@ -17,7 +17,7 @@ async function getBrands() {
     });
 }
 
-async function getModelsByBrand(idBrand) {
+async function getModelsByBrandID(idBrand) {
     return new Promise((resolve, reject) => {
         const db = new Database();
 
@@ -34,7 +34,25 @@ async function getModelsByBrand(idBrand) {
     });
 }
 
+async function getCarsByModelID(idModel) {
+    return new Promise((resolve, reject) => {
+        const db = new Database();
+
+        const sql = "SELECT * FROM Cars WHERE idModel=?";
+        const value = [idModel];
+
+        db.readQuery(sql, value).then((result) => {
+            resolve(result);
+        }).catch((error) => {
+            reject(error);
+        }).finally(()=> {
+            db.close();
+        });
+    });
+}
+
 module.exports = {
     getBrands,
-    getModelsByBrand,
+    getModelsByBrandID,
+    getCarsByModelID
 };

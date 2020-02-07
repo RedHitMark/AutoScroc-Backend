@@ -121,7 +121,18 @@ module.exports = (app) => {
     app.get(BASE_API_URL + API_VERSION_1_0 + '/explorer/models/', (req, res) => {
         const idBrand = req.query.idBrand || 1;
 
-        explorerManagement.getModelsByBrand(idBrand)
+        explorerManagement.getModelsByBrandID(idBrand)
+            .then((result) => {
+                res.json(result);
+            }).catch((error) => {
+
+        });
+    });
+
+    app.get(BASE_API_URL + API_VERSION_1_0 + '/explorer/cars/', (req, res) => {
+        const idModel = req.query.idModel || 1;
+
+        explorerManagement.getCarsByModelId(idModel)
             .then((result) => {
                 res.json(result);
             }).catch((error) => {
