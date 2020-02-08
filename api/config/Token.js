@@ -72,7 +72,7 @@ async function deleteToken(token, uuid)  {
         const db = new Database();
 
         const sql = "DELETE FROM Tokens WHERE token = ? and uuid =?";
-        const value = [token];
+        const value = [token, uuid];
 
         db.writeQuery(sql, value)
             .then((numUpdates) => {
