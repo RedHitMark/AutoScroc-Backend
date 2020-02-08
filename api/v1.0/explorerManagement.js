@@ -51,8 +51,26 @@ async function getCarsByModelID(idModel) {
     });
 }
 
+async function getCar(id) {
+    return new Promise((resolve, reject) => {
+        const db = new Database();
+
+        const sql = "SELECT * FROM Cars WHERE id=?";
+        const value = [id];
+
+        db.readQuery(sql, value).then((result) => {
+            resolve(result);
+        }).catch((error) => {
+            reject(error);
+        }).finally(()=> {
+            db.close();
+        });
+    });
+}
+
 module.exports = {
     getBrands,
     getModelsByBrandID,
-    getCarsByModelID
+    getCarsByModelID,
+    getCar
 };
