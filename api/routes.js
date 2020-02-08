@@ -31,6 +31,7 @@ module.exports = (app) => {
             .then((jsonSuccess) => {
                 res.json(jsonSuccess);
             }).catch((error) => {
+                console.log({error: error.message});
                 res.status(error.status).json({error: error.message});
             });
     });
