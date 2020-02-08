@@ -12,8 +12,8 @@ function register(user, role) {
             if (isMailValid(user.email)) {
                 const db = new Database();
 
-                const sql = "INSERT INTO Users (name, surname, email, username, password, address, city, region, country, tel, role) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-                const value = [user.name, user.surname, user.email, user.username, user.password, user.address, user.city, user.region, user.country, user.tel, role];
+                const sql = "INSERT INTO Users (name, surname, email, username, password, address, city, region, country, tel, img,  role) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                const value = [user.name, user.surname, user.email, user.username, user.password, user.address, user.city, user.region, user.country, user.tel, user.img, role];
 
                 db.writeQuery(sql, value)
                     .then((numInserts) => {

@@ -10,7 +10,8 @@ function bindUser(obj) {
         city: obj.city,
         region: obj.region,
         country: obj.country,
-        tel: obj.tel
+        tel: obj.tel,
+        img: obj.img
     };
 }
 function bindRent(obj) {
