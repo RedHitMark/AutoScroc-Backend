@@ -78,8 +78,9 @@ async function deleteToken(token, uuid)  {
             .then((numUpdates) => {
                 if(numUpdates === 1) {
                     resolve();
+                } else {
+                    reject('cannot delete');
                 }
-                reject('cannot delete');
             }).catch((err) => {
                 reject(err);
             }).finally(() => {

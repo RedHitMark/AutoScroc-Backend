@@ -81,6 +81,8 @@ module.exports = (app) => {
         const token = req.body.token;
         const uuid = req.body.uuid;
 
+        console.log(token + " " + uuid);
+
         userManagement.logout(token, uuid)
             .then((jsonSuccess) => {
                 res.json(jsonSuccess);
