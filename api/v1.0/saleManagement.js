@@ -26,7 +26,7 @@ async function createSale(licensePlate, idCar, matriculationYear, km) {
         const sql = "INSERT INTO Rent (licensePlate, idCar, matriculationYear, km, type) VALUES (?, ?, ?, ?, 1)";
         const value = [licensePlate, idCar, matriculationYear, km];
 
-        db.readQuery(sql, value).then((result) => {
+        db.writeQuery(sql, value).then((result) => {
             resolve(result);
         }).catch((error) => {
             reject({status: 404, message: error});
