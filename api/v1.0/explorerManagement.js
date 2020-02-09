@@ -59,7 +59,11 @@ async function getCar(id) {
         const value = [id];
 
         db.readQuery(sql, value).then((result) => {
-            resolve(result);
+            if(result.length >= 1) {
+                resolve(result[0]);
+            } else {
+                reject({status: 404, message: "not found"})
+            }
         }).catch((error) => {
             reject(error);
         }).finally(()=> {
