@@ -124,6 +124,18 @@ module.exports = (app) => {
             });
     });
 
+    app.post(BASE_API_URL + API_VERSION_1_0 + '/user-purchase', (req, res) => {
+        const token = req.body.token;
+        const uuid = req.body.uuid;
+
+        saleManagement.getPurchasesOfUser(token, uuid)
+            .then((result) => {
+                res.json(result);
+            }).catch((error) => {
+                res.status(error.status).json({error: error.message});
+            });
+    });
+
     app.get(BASE_API_URL + API_VERSION_1_0 + '/explorer/brands', (req, res) => {
         explorerManagement.getBrands()
             .then((result) => {
