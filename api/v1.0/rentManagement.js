@@ -1,4 +1,5 @@
 const Database = require("../config/Database");
+const Token = require("../config/Token");
 
 async function getRents(idPage) {
     return new Promise((resolve, reject) => {
@@ -37,7 +38,31 @@ async function createRent(idPage) {
     });
 }
 
+async function getRentOfUser(token, uuid) {
+    return new Promise((resolve, reject) => {
+        Token.isTokenValid(token, uuid)
+            .then(() => {
+                const db = new Database();
+
+                const sql = "SELECT Rent.licensePlate, Rent.matriculationYear, Rent.price, Rent.km, Cars.id, Cars.idModel, Cars.idBrand, Cars.name, Cars.carType, Cars.engineType, Cars.doors, Cars.trasmission, Cars.hp, Cars.kw, Cars.torque, Cars.cc, Cars.numCylinders, Cars.cylindersType, Cars.topSpeed, Cars.acc, Cars.weight, Cars.img FROM Rent LEFT JOIN Cars ON Rent.idCar=Cars.id LEFT JOIN Tokens ON Tokens.user=Rent.idPurchaseUser WHERE Tokens.token=? AND Tokens.uuid=? AND Rent.type=0;";
+                const value = [token, uuid];
+
+                db.readQuery(sql, value).then((result) => {
+                    resolve(result);
+                }).catch((error) => {
+                    reject(error);
+                }).finally(()=> {
+                    db.close();
+                });
+            }).catch((invalidTokenMessage) => {
+                //401: Unauthorized
+                reject({status: 401, message: invalidTokenMessage});
+            });
+    });
+}
+
 module.exports = {
     getRents,
-    createRent
+    createRent,
+    getRentOfUser
 };

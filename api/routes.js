@@ -102,6 +102,18 @@ module.exports = (app) => {
             });
     });
 
+    app.get(BASE_API_URL + API_VERSION_1_0 + '/user-rent', (req, res) => {
+        const token = req.body.token;
+        const uuid = req.body.uuid;
+
+        rentManagement.getRentOfUser(token, uuid)
+            .then((result) => {
+                res.json(result);
+            }).catch((error) => {
+                res.status(error.status).json({error: error.message});
+            });
+    });
+
     app.get(BASE_API_URL + API_VERSION_1_0 + '/sales', (req, res) => {
         const idPage = req.query.idPage || 1;
         saleManagement.getSales(idPage)
