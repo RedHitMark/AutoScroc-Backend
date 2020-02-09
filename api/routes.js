@@ -143,7 +143,7 @@ module.exports = (app) => {
             });
     });
 
-    app.get(BASE_API_URL + API_VERSION_1_0 + '/explorer/cars/', (req, res) => {
+    app.get(BASE_API_URL + API_VERSION_1_0 + '/explorer/car/', (req, res) => {
         const id = req.query.id || 1;
 
         explorerManagement.getCar(id)
