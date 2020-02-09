@@ -98,7 +98,7 @@ module.exports = (app) => {
             .then((result) => {
                 res.json(result);
             }).catch((error) => {
-
+                res.status(error.status).json({error: error.message});
             });
     });
 
@@ -108,7 +108,7 @@ module.exports = (app) => {
             .then((result) => {
                 res.json(result);
             }).catch((error) => {
-
+                res.status(error.status).json({error: error.message});
             });
     });
 
@@ -117,7 +117,7 @@ module.exports = (app) => {
             .then((result) => {
                 res.json(result);
             }).catch((error) => {
-
+                res.status(error.status).json({error: error.message});
             });
     });
 
@@ -128,8 +128,8 @@ module.exports = (app) => {
             .then((result) => {
                 res.json(result);
             }).catch((error) => {
-
-        });
+                res.status(error.status).json({error: error.message});
+            });
     });
 
     app.get(BASE_API_URL + API_VERSION_1_0 + '/explorer/cars/', (req, res) => {
@@ -139,19 +139,19 @@ module.exports = (app) => {
             .then((result) => {
                 res.json(result);
             }).catch((error) => {
-
-        });
+                res.status(error.status).json({error: error.message});
+            });
     });
 
     app.get(BASE_API_URL + API_VERSION_1_0 + '/explorer/cars/', (req, res) => {
         const id = req.query.id || 1;
 
-        explorerManagement.getCarsByModelID(id)
+        explorerManagement.getCar(id)
             .then((result) => {
                 res.json(result);
             }).catch((error) => {
-
-        });
+                res.status(error.status).json({error: error.message});
+            });
     });
 
 
