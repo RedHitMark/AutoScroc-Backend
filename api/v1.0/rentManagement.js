@@ -10,7 +10,7 @@ async function getRents(idPage) {
         const sql = "SELECT Rent.licensePlate, Rent.matriculationYear, Rent.price, Rent.km, Cars.id, Cars.idModel, Cars.idBrand, Cars.name, Cars.carType, Cars.engineType, Cars.doors, Cars.trasmission, Cars.hp, Cars.kw, Cars.torque, Cars.cc, Cars.numCylinders, Cars.cylindersType, Cars.topSpeed, Cars.acc, Cars.weight, Cars.img  FROM Rent LEFT JOIN Cars ON Rent.idCar=Cars.id WHERE Rent.type=0 AND Rent.idPurchaseUser IS NULL LIMIT ? OFFSET ?;";
         const value = [PAGE_LENGHT, (idPage - 1) * PAGE_LENGHT];
 
-        db.writeQuery(sql, value).then((result) => {
+        db.readQuery(sql, value).then((result) => {
             resolve(result);
         }).catch((error) => {
             reject(error);
@@ -26,7 +26,7 @@ async function createRent(licensePlate, idCar, matriculationYear, km) {
         const sql = "INSERT INTO Rent (licensePlate, idCar, matriculationYear, km, type) VALUES (?, ?, ?, ?, 0)";
         const value = [licensePlate, idCar, matriculationYear, km];
 
-        db.readQuery(sql, value).then((result) => {
+        db.writeQuery(sql, value).then((result) => {
             resolve(result);
         }).catch((error) => {
             reject({status: 404, message: error});
