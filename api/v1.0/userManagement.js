@@ -164,10 +164,10 @@ function revalidateUser(token, uuid, secret) {
     });
 }
 
-function logout(token) {
+function logout(token, uuid) {
     return new Promise((resolve, reject) => {
-        if (token) {
-            Token.deleteToken(token)
+        if (token && uuid) {
+            Token.deleteToken(token, uuid)
                 .then(() => {
                     resolve({message : "success"});
                 })
