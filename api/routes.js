@@ -102,7 +102,7 @@ module.exports = (app) => {
             });
     });
 
-    app.get(BASE_API_URL + API_VERSION_1_0 + '/user-rent', (req, res) => {
+    app.post(BASE_API_URL + API_VERSION_1_0 + '/user-rent', (req, res) => {
         const token = req.body.token;
         const uuid = req.body.uuid;
 
