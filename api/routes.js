@@ -102,6 +102,18 @@ module.exports = (app) => {
                 res.status(error.status).json({error: error.message});
             });
     });
+    app.post(BASE_API_URL + API_VERSION_1_0 + '/create-rent', (req, res) => {
+        const licensePlate = req.body.licensePlate || "AA123AA";
+        const idCar = req.body.idCar || 1;
+        const matriculationYear = req.body.matriculationYear || 1900;
+        const km = req.body.km || 1;
+        rentManagement.createRent(licensePlate, idCar, matriculationYear, km)
+            .then((result) => {
+                res.json(result);
+            }).catch((error) => {
+                res.status(error.status).json({error: error.message});
+            });
+    });
     app.post(BASE_API_URL + API_VERSION_1_0 + '/user-rents', (req, res) => {
         const token = req.body.token;
         const uuid = req.body.uuid;
@@ -130,6 +142,18 @@ module.exports = (app) => {
     app.get(BASE_API_URL + API_VERSION_1_0 + '/sales', (req, res) => {
         const idPage = req.query.idPage || 1;
         saleManagement.getSales(idPage)
+            .then((result) => {
+                res.json(result);
+            }).catch((error) => {
+                res.status(error.status).json({error: error.message});
+            });
+    });
+    app.post(BASE_API_URL + API_VERSION_1_0 + '/create-sale', (req, res) => {
+        const licensePlate = req.body.licensePlate || "AA123AA";
+        const idCar = req.body.idCar || 1;
+        const matriculationYear = req.body.matriculationYear || 1900;
+        const km = req.body.km || 1;
+        saleManagement.createSale(licensePlate, idCar, matriculationYear, km)
             .then((result) => {
                 res.json(result);
             }).catch((error) => {
