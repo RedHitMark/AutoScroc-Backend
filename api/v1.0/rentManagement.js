@@ -7,7 +7,7 @@ async function getRents(idPage) {
 
         const PAGE_LENGHT = 20;
 
-        const sql = "SELECT Rent.licensePlate, Rent.matriculationYear, Rent.price, Rent.km, Cars.id, Cars.idModel, Cars.idBrand, Cars.name, Cars.carType, Cars.engineType, Cars.doors, Cars.trasmission, Cars.hp, Cars.kw, Cars.torque, Cars.cc, Cars.numCylinders, Cars.cylindersType, Cars.topSpeed, Cars.acc, Cars.weight, Cars.img  FROM Rent LEFT JOIN Cars ON Rent.idCar=Cars.id WHERE Rent.type=0 LIMIT ? OFFSET ?;";
+        const sql = "SELECT Rent.licensePlate, Rent.matriculationYear, Rent.price, Rent.km, Cars.id, Cars.idModel, Cars.idBrand, Cars.name, Cars.carType, Cars.engineType, Cars.doors, Cars.trasmission, Cars.hp, Cars.kw, Cars.torque, Cars.cc, Cars.numCylinders, Cars.cylindersType, Cars.topSpeed, Cars.acc, Cars.weight, Cars.img  FROM Rent LEFT JOIN Cars ON Rent.idCar=Cars.id WHERE Rent.type=0 AND Rent.idPurchaseUser IS NULL LIMIT ? OFFSET ?;";
         const value = [PAGE_LENGHT, (idPage - 1) * PAGE_LENGHT];
 
         db.writeQuery(sql, value).then((result) => {
