@@ -49,7 +49,7 @@ async function getPurchasesOfUser(token, uuid) {
                 db.readQuery(sql, value).then((result) => {
                     resolve(result);
                 }).catch((error) => {
-                    reject(error);
+                    reject({status: 404, message: error});
                 }).finally(()=> {
                     db.close();
                 });
