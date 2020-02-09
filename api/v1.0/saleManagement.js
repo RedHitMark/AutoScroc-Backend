@@ -61,8 +61,32 @@ async function getPurchasesOfUser(token, uuid) {
     });
 }
 
+async function purchase(token, uuid, licensePlate) {
+    return new Promise((resolve, reject) => {
+        Token.isTokenValid(token, uuid)
+            .then(() => {
+                const db = new Database();
+
+                const sql = "UPDATE Rent SET Rent.idPurchaseUser=(SELECT user FROM Tokens WHERE Tokens.token=? AND Tokens.uuid=?) WHERE Rent.licensePlate=?";
+                const value = [token, uuid, licensePlate];
+
+                db.readQuery(sql, value).then((result) => {
+                    resolve(result);
+                }).catch((error) => {
+                    reject({status: 404, message: error});
+                }).finally(()=> {
+                    db.close();
+                });
+            }).catch((invalidTokenMessage) => {
+            //401: Unauthorized
+            reject({status: 401, message: invalidTokenMessage});
+        });
+    });
+}
+
 module.exports = {
     getSales,
     createSale,
-    getPurchasesOfUser
+    getPurchasesOfUser,
+    purchase
 };

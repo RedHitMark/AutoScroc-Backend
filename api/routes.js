@@ -92,6 +92,7 @@ module.exports = (app) => {
     });
 
 
+    /** RENT END-POINTS **/
     app.get(BASE_API_URL + API_VERSION_1_0 + '/rent', (req, res) => {
         const idPage = req.query.idPage || 1;
         rentManagement.getRents(idPage)
@@ -101,7 +102,6 @@ module.exports = (app) => {
                 res.status(error.status).json({error: error.message});
             });
     });
-
     app.post(BASE_API_URL + API_VERSION_1_0 + '/user-rents', (req, res) => {
         const token = req.body.token;
         const uuid = req.body.uuid;
@@ -113,7 +113,20 @@ module.exports = (app) => {
                 res.status(error.status).json({error: error.message});
             });
     });
+    app.post(BASE_API_URL + API_VERSION_1_0 + '/buy-rent', (req, res) => {
+        const token = req.body.token;
+        const uuid = req.body.uuid;
+        const licensePlate = req.body.licensePlate;
 
+        rentManagement.buyRent(token, uuid, licensePlate)
+            .then((result) => {
+                res.json(result);
+            }).catch((error) => {
+                res.status(error.status).json({error: error.message});
+            });
+    });
+
+    /** SALES END-POINTS **/
     app.get(BASE_API_URL + API_VERSION_1_0 + '/sales', (req, res) => {
         const idPage = req.query.idPage || 1;
         saleManagement.getSales(idPage)
@@ -123,7 +136,6 @@ module.exports = (app) => {
                 res.status(error.status).json({error: error.message});
             });
     });
-
     app.post(BASE_API_URL + API_VERSION_1_0 + '/user-purchases', (req, res) => {
         const token = req.body.token;
         const uuid = req.body.uuid;
@@ -135,7 +147,20 @@ module.exports = (app) => {
                 res.status(error.status).json({error: error.message});
             });
     });
+    app.post(BASE_API_URL + API_VERSION_1_0 + '/purchase', (req, res) => {
+        const token = req.body.token;
+        const uuid = req.body.uuid;
+        const licensePlate = req.body.licensePlate;
 
+        saleManagement.purchase(token, uuid, licensePlate)
+            .then((result) => {
+                res.json(result);
+            }).catch((error) => {
+            res.status(error.status).json({error: error.message});
+        });
+    });
+
+    /** EXPLORER END-POINTS **/
     app.get(BASE_API_URL + API_VERSION_1_0 + '/explorer/brands', (req, res) => {
         explorerManagement.getBrands()
             .then((result) => {
@@ -144,7 +169,6 @@ module.exports = (app) => {
                 res.status(error.status).json({error: error.message});
             });
     });
-
     app.get(BASE_API_URL + API_VERSION_1_0 + '/explorer/models/', (req, res) => {
         const idBrand = req.query.idBrand || 1;
 
@@ -155,7 +179,6 @@ module.exports = (app) => {
                 res.status(error.status).json({error: error.message});
             });
     });
-
     app.get(BASE_API_URL + API_VERSION_1_0 + '/explorer/cars/', (req, res) => {
         const idModel = req.query.idModel || 1;
 
@@ -166,7 +189,6 @@ module.exports = (app) => {
                 res.status(error.status).json({error: error.message});
             });
     });
-
     app.get(BASE_API_URL + API_VERSION_1_0 + '/explorer/car/', (req, res) => {
         const id = req.query.id || 1;
 
@@ -179,9 +201,7 @@ module.exports = (app) => {
     });
 
 
-    /**
-     * NOT FOUND FALL-BACK
-     */
+    /** NOT FOUND FALL-BACK **/
     app.get('*', (req, res) => {
         console.log('GET fall back');
         res.status(404).json({message : "not found on this server"});
