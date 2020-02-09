@@ -102,11 +102,11 @@ module.exports = (app) => {
             });
     });
 
-    app.post(BASE_API_URL + API_VERSION_1_0 + '/user-rent', (req, res) => {
+    app.post(BASE_API_URL + API_VERSION_1_0 + '/user-rents', (req, res) => {
         const token = req.body.token;
         const uuid = req.body.uuid;
 
-        rentManagement.getRentOfUser(token, uuid)
+        rentManagement.getRentsOfUser(token, uuid)
             .then((result) => {
                 res.json(result);
             }).catch((error) => {
@@ -124,7 +124,7 @@ module.exports = (app) => {
             });
     });
 
-    app.post(BASE_API_URL + API_VERSION_1_0 + '/user-purchase', (req, res) => {
+    app.post(BASE_API_URL + API_VERSION_1_0 + '/user-purchases', (req, res) => {
         const token = req.body.token;
         const uuid = req.body.uuid;
 

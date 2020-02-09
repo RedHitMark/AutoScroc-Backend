@@ -38,7 +38,7 @@ async function createRent(idPage) {
     });
 }
 
-async function getRentOfUser(token, uuid) {
+async function getRentsOfUser(token, uuid) {
     return new Promise((resolve, reject) => {
         Token.isTokenValid(token, uuid)
             .then(() => {
@@ -64,5 +64,5 @@ async function getRentOfUser(token, uuid) {
 module.exports = {
     getRents,
     createRent,
-    getRentOfUser
+    getRentsOfUser
 };

@@ -1,4 +1,5 @@
 const Database = require("../config/Database");
+const Token = require("../config/Token");
 
 async function getSales(idPage) {
     return new Promise((resolve, reject) => {
