@@ -19,12 +19,12 @@ async function getRents(idPage) {
         });
     });
 }
-async function createRent(licensePlate, idCar, matriculationYear, km) {
+async function createRent(licensePlate, idCar, matriculationYear, km, price) {
     return new Promise((resolve, reject) => {
         const db = new Database();
 
-        const sql = "INSERT INTO Rent (licensePlate, idCar, matriculationYear, km, type) VALUES (?, ?, ?, ?, 0)";
-        const value = [licensePlate, idCar, matriculationYear, km];
+        const sql = "INSERT INTO Rent (licensePlate, idCar, matriculationYear, km, price, type) VALUES (?, ?, ?, ?, ?, 0)";
+        const value = [licensePlate, idCar, matriculationYear, price, km];
 
         db.writeQuery(sql, value).then((result) => {
             resolve(result);

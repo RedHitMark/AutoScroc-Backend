@@ -107,7 +107,8 @@ module.exports = (app) => {
         const idCar = req.body.id || 1;
         const matriculationYear = req.body.matriculationYear || 1900;
         const km = req.body.km || 1;
-        rentManagement.createRent(licensePlate, idCar, matriculationYear, km)
+        const price = req.body.price || 1;
+        rentManagement.createRent(licensePlate, idCar, matriculationYear, km, price)
             .then((result) => {
                 res.json(result);
             }).catch((error) => {
@@ -153,7 +154,8 @@ module.exports = (app) => {
         const idCar = req.body.id || 1;
         const matriculationYear = req.body.matriculationYear || 1900;
         const km = req.body.km || 1;
-        saleManagement.createSale(licensePlate, idCar, matriculationYear, km)
+        const price = req.body.price || 1;
+        saleManagement.createSale(licensePlate, idCar, matriculationYear, km, price)
             .then((result) => {
                 res.json(result);
             }).catch((error) => {
