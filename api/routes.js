@@ -104,7 +104,7 @@ module.exports = (app) => {
     });
     app.post(BASE_API_URL + API_VERSION_1_0 + '/create-rent', (req, res) => {
         const licensePlate = req.body.licensePlate || "AA123AA";
-        const idCar = req.body.idCar || 1;
+        const idCar = req.body.id || 1;
         const matriculationYear = req.body.matriculationYear || 1900;
         const km = req.body.km || 1;
         rentManagement.createRent(licensePlate, idCar, matriculationYear, km)
@@ -150,7 +150,7 @@ module.exports = (app) => {
     });
     app.post(BASE_API_URL + API_VERSION_1_0 + '/create-sale', (req, res) => {
         const licensePlate = req.body.licensePlate || "AA123AA";
-        const idCar = req.body.idCar || 1;
+        const idCar = req.body.id || 1;
         const matriculationYear = req.body.matriculationYear || 1900;
         const km = req.body.km || 1;
         saleManagement.createSale(licensePlate, idCar, matriculationYear, km)
