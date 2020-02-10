@@ -28,7 +28,7 @@ async function isTokenValid(token, uuid) {
 
         db.readQuery(sql, value)
             .then((result) => {
-                const TOKEN_VALID_IN_MIN = 10;
+                const TOKEN_VALID_IN_MIN = 600;
                 if (result.length === 1 && (+new Date() - result[0].timestamp) <= (1000* 60 * TOKEN_VALID_IN_MIN)) {
                     refreshToken(token, uuid); //async call
                     resolve();
